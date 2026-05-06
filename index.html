@@ -1,1 +1,1248 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karakter Referans Kartından Video Üretimine — Ders Notu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF7F2;
+    --bg-elev: #F4EDE0;
+    --ink: #1F1B16;
+    --ink-soft: #4A4138;
+    --ink-mute: #7A6F62;
+    --line: #E8E1D5;
+    --line-strong: #C9BEAB;
+    --accent: #B8865B;
+    --accent-deep: #8C5E33;
+    --quote: #D4A574;
+    --code-bg: #16110C;
+    --code-ink: #F2EAD9;
+    --code-accent: #E2B07A;
+    --tip-bg: #FBF3E2;
+    --tip-border: #E2B07A;
+    --warn-bg: #F6E8E3;
+    --warn-border: #C97C5D;
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    max-width: 1240px;
+    margin: 0 auto;
+    gap: 56px;
+    padding: 0 32px;
+  }
+
+  /* ---------- SIDEBAR / TOC ---------- */
+  aside.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 56px 0 32px;
+    border-right: 1px solid var(--line);
+    padding-right: 24px;
+  }
+  .toc-brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin-bottom: 8px;
+  }
+  .toc-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 32px;
+    letter-spacing: -0.01em;
+  }
+  .toc-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .toc nav ol { list-style: none; counter-reset: toc; }
+  .toc nav ol li {
+    counter-increment: toc;
+    margin-bottom: 4px;
+  }
+  .toc nav ol li a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.45;
+    padding: 8px 10px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+  }
+  .toc nav ol li a::before {
+    content: counter(toc, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .toc nav ol li a:hover {
+    background: var(--bg-elev);
+    color: var(--ink);
+  }
+  .toc-foot {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+  }
+
+  /* ---------- MAIN ---------- */
+  main {
+    padding: 64px 0 120px;
+    max-width: 760px;
+  }
+
+  /* ---------- COVER ---------- */
+  .cover {
+    margin-bottom: 80px;
+    padding-bottom: 56px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cover-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    background: var(--bg-elev);
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+  h1.cover-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+  h1.cover-title em {
+    font-style: italic;
+    color: var(--accent-deep);
+  }
+  .cover-lede {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 620px;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+    font-size: 13px;
+    color: var(--ink-mute);
+  }
+  .cover-meta b {
+    display: block;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 2px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section { margin-bottom: 80px; scroll-margin-top: 32px; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-top: 44px;
+    margin-bottom: 16px;
+  }
+  h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+
+  p { margin-bottom: 18px; color: var(--ink); }
+  p + p { margin-top: 0; }
+
+  /* ---------- LISTS ---------- */
+  ol.steps, ul.bullets { margin: 0 0 24px 0; padding: 0; list-style: none; }
+  ol.steps { counter-reset: steps; }
+  ol.steps li {
+    counter-increment: steps;
+    position: relative;
+    padding: 14px 16px 14px 56px;
+    background: var(--bg-elev);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--accent);
+  }
+  ol.steps li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-deep);
+    color: var(--bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  ul.bullets li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 10px;
+  }
+  ul.bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* ---------- QUOTES ---------- */
+  blockquote {
+    margin: 28px 0;
+    padding: 20px 28px;
+    background: linear-gradient(to right, var(--bg-elev), transparent);
+    border-left: 4px solid var(--quote);
+    border-radius: 0 8px 8px 0;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  blockquote.callout {
+    font-style: normal;
+    background: var(--tip-bg);
+    border-left-color: var(--tip-border);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ---------- INFO BOXES ---------- */
+  .info {
+    background: var(--tip-bg);
+    border: 1px solid var(--tip-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 28px 0;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .info-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: var(--accent-deep);
+    color: var(--bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 2px;
+  }
+  .info-body { flex: 1; }
+  .info-title {
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .info-body p:last-child { margin-bottom: 0; }
+
+  .info.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .info.warn .info-icon { background: var(--warn-border); }
+
+  /* ---------- CODE / PROMPT BLOCKS ---------- */
+  .prompt {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 14px;
+    margin: 28px 0;
+    overflow: hidden;
+    box-shadow: 0 8px 24px -10px rgba(0,0,0,0.25);
+  }
+  .prompt-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .prompt-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--code-accent);
+    font-weight: 500;
+  }
+  .prompt-dots { display: flex; gap: 6px; }
+  .prompt-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+  }
+  .prompt-body {
+    padding: 22px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+
+  code.inline {
+    background: var(--bg-elev);
+    color: var(--accent-deep);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+    border: 1px solid var(--line);
+  }
+
+  /* ---------- IMAGES ---------- */
+  figure {
+    margin: 32px 0;
+  }
+  figure img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    display: block;
+  }
+  figure.bordered img {
+    box-shadow: 0 12px 40px -16px rgba(31,27,22,0.18);
+  }
+  figcaption {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-style: italic;
+    text-align: center;
+    line-height: 1.5;
+  }
+  /* Placeholder appearance for missing images */
+  figure img:not([src]),
+  figure img[src=""] {
+    min-height: 220px;
+    background: var(--bg-elev);
+    border: 2px dashed var(--line-strong);
+  }
+
+  .image-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 32px 0; }
+  .image-pair figure { margin: 0; }
+
+  /* ---------- KEY CONCEPTS ---------- */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 28px 0;
+  }
+  .concept {
+    padding: 20px;
+    background: var(--bg-elev);
+    border-radius: 10px;
+    border-top: 3px solid var(--accent);
+  }
+  .concept-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .concept-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* ---------- BIG QUOTE ---------- */
+  .big-quote {
+    margin: 56px 0;
+    padding: 40px 48px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--bg-elev) 0%, transparent 100%);
+    border-radius: 16px;
+    border: 1px solid var(--line);
+  }
+  .big-quote p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.4;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .big-quote::before {
+    content: '"';
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 64px;
+    line-height: 0.5;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  /* ---------- LINKS ---------- */
+  a {
+    color: var(--accent-deep);
+    text-decoration: underline;
+    text-decoration-color: var(--quote);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+  }
+  a:hover { color: var(--accent); }
+
+  .link-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin: 20px 0;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .link-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px -8px rgba(0,0,0,0.08);
+  }
+  .link-card-icon {
+    width: 40px; height: 40px;
+    background: var(--accent-deep); color: var(--bg);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+  }
+  .link-card-body { flex: 1; }
+  .link-card-title { font-weight: 600; color: var(--ink); margin-bottom: 2px; text-decoration: none; }
+  .link-card-url { font-size: 12px; color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+
+  /* ---------- DIVIDER ---------- */
+  hr.deco {
+    border: none;
+    height: 1px;
+    background: var(--line);
+    margin: 56px 0;
+    position: relative;
+  }
+  hr.deco::after {
+    content: '✦';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding: 0 16px;
+    color: var(--accent);
+    font-size: 14px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer.end {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-mute);
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; padding: 0 24px; gap: 0; }
+    aside.toc { position: relative; top: auto; height: auto; border-right: none; border-bottom: 1px solid var(--line); padding: 32px 0; }
+    main { padding: 32px 0 80px; }
+    h1.cover-title { font-size: 40px; }
+    h2 { font-size: 28px; }
+    .image-pair { grid-template-columns: 1fr; }
+    .concept-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- PRINT ---------- */
+  @media print {
+    aside.toc { display: none; }
+    .layout { display: block; padding: 0; }
+    main { max-width: 100%; padding: 0; }
+    section { page-break-inside: avoid; }
+    figure { page-break-inside: avoid; }
+    .prompt { page-break-inside: avoid; }
+    body { font-size: 12pt; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- =============== TOC SIDEBAR =============== -->
+  <aside class="toc">
+    <div class="toc-brand">Ders Notu</div>
+    <div class="toc-title">Karakter Referans Kartından Video Üretimine</div>
+    <div class="toc-label">İçindekiler</div>
+    <nav>
+      <ol>
+        <li><a href="#bolum-1">Tutarlılık problemi ve referans kartı mantığı</a></li>
+        <li><a href="#bolum-2">Temel karakter referans kartı üretimi</a></li>
+        <li><a href="#bolum-3">Geliştirilmiş referans kartı (mimikler dahil)</a></li>
+        <li><a href="#bolum-4">Starting & Ending Frame mantığı</a></li>
+        <li><a href="#bolum-5">Demo: Nef'in hikayesi (uçtan uca)</a></li>
+        <li><a href="#bolum-6">Daha kolay yol: Custom GPT</a></li>
+      </ol>
+    </nav>
+    <div class="toc-foot">
+      Bu rehber, yapay zeka ile tutarlı karakter ve video üretmek isteyen öğrenciler için hazırlandı. Her bölümün sonunda promptlar, ekran görüntüleri ve uygulamalı adımlar bulacaksın.
+    </div>
+  </aside>
+
+  <!-- =============== MAIN CONTENT =============== -->
+  <main>
+
+    <!-- ============ COVER ============ -->
+    <header class="cover">
+      <span class="cover-eyebrow">Ders Notu · Modül</span>
+      <h1 class="cover-title">Karakter Referans Kartından <em>Video Üretimine</em></h1>
+      <p class="cover-lede">Yapay zeka ile video üretirken karşılaştığın en büyük problemi — tutarlılığı — adım adım çözmek için pratik bir rehber. Karakter sayfasından <em>starting</em> ve <em>ending frame</em> mantığına, oradan da uçtan uca demoya kadar.</p>
+      <div class="cover-meta">
+        <div><b>Süre</b>~ 25 dk okuma</div>
+        <div><b>Seviye</b>Orta</div>
+        <div><b>Çıktı</b>Video referans sistemi</div>
+      </div>
+    </header>
+
+    <!-- ============ SECTION 1 ============ -->
+    <section id="bolum-1">
+      <div class="section-head">
+        <div class="section-num">BÖLÜM 01</div>
+        <h2>Tutarlılık problemi ve referans kartı mantığı</h2>
+      </div>
+
+      <p>Terimler, onlar, bunlar; çok fazla kafa yormaya gerek yok.</p>
+      <p>Video üretirken en sık karşılaşacağın problemlerden birisi <strong>tutarlılık sağlamaktır</strong>.</p>
+
+      <h3>Tutarlılık sağlamaktan kastım nedir?</h3>
+      <p>Bir karakterin tutarlılığını sağlamak, yani her video karesinde görünen kişinin, nesnenin, ortamın, bir ürünün veya herhangi bir şeyin <strong>devamlılığını sağlamak</strong>, aynı şekilde görünmesini temin etmektir. Bu, video üretirken karşılaştığımız en büyük sıkıntılardan bir tanesidir.</p>
+      <p>Bunu sadece bir dizinin bölümleri gibi veya filmin farklı aşamaları olarak düşünme. Bu, <strong>tek bir video içinde</strong> de karşımıza çıkabilen bir şey.</p>
+      <p>O yüzden, her şeyden önce yapmamız gereken şey, videodaki tutarlılığı sağlayabilmek.</p>
+
+      <h3>Peki çözüm yok mu?</h3>
+      <p>Evet, her geçen gün teknoloji gelişiyor ve karakter tutarlılığı konusunda da kendini geliştiriyor; ama hâlâ mükemmel değil. O yüzden temelde yapabileceğimiz bir şey var: <strong>karakter referans kartı oluşturma</strong>. Karakter referans sayfası da diyebiliriz buna.</p>
+      <p>Bunu oluşturduğumuzda aslında yapay zekaya her seferinde şunu söylemiş oluyoruz:</p>
+
+      <blockquote>"Bak, ben bu karakteri üretiyorum veya bu ortamı üretiyorum. Bu kişiyi olduğu gibi koru!"</blockquote>
+
+      <p>Mükemmel bir sonuç veriyor mu? Hayır! Vermediği noktalar da oluyor. Ama mükemmele en yakın çıktıkları almamızı sağlayan önemli adımlardan ve işlerimizi kolaylaştıran şeylerden bir tanesi bu oluyor.</p>
+
+      <h3>Sadece karakter değil — ürün, ortam, storyboard</h3>
+      <p>Bunu sadece video üretimi olarak düşünme. Yarın öbür gün bir <strong>otomasyon sistemi</strong> kurduğunda, aynı karakterin, aynı kişinin veya aynı ürünün tutarlı videolarına ihtiyaç duyacaksın. Yine bu karakter referans kartını kullanabilirsin.</p>
+      <p>Bunu sadece karakter olarak düşünme. Bir <strong>ürün</strong> için de yapabilirsin. Veya bir <strong>ortam</strong> için de yapabilirsin.</p>
+      <p>Amacımız, yapay zekaya <em>"ben bunlarla, bu elementlerle, bununla çalışıyorum"</em> diye öğretebilmek.</p>
+      <p>Aynı mantığı, video üretimlerinde bir hikaye anlatacağında <strong>storyboard mantığı</strong> olarak da kullanabilirsin.</p>
+
+      <div class="big-quote">
+        <p>Size evin önünde bir kedi hayal etmenizi söylesem, hepiniz muhtemelen kendi evinizin önünde aklınıza gelen, sizin deneyimlerinizden kalan bir kediyi hayal edeceksiniz.</p>
+      </div>
+
+      <p>Bizler, insan olarak, zihnimizde kendi geçmiş deneyimlerimize ait anılardan ve kendi deneyimlediğimiz şeylerden yola çıkarak kendi gerçekliğimizde bir şeyleri hayal ederiz.</p>
+      <p>Yapay zekâ da aynı şekilde, diye düşünelim. O da olabilecek en olası şeyi hayal etmeye çalışır; yani <strong>kendi gerçekliğini üretir</strong>. Eğer biz ona kendi gerçekliğimizi, kendi deneyimimizi ve kendi isteğimizi net bir şekilde söylemezsek, o da kendi istediği gibi bize yanıt verecektir.</p>
+
+      <div class="info">
+        <div class="info-icon">i</div>
+        <div class="info-body">
+          <div class="info-title">İşin özü</div>
+          <p>Yapay zekaya referans kartını verdiğimizde; bu karakterin önden, sağdan, soldan nasıl göründüğünü, nasıl güldüğünü, mimiklerini ve görünüşünü anlamış oluyor. Böylece <strong>kendisi bir şeyleri tamamlamak zorunda kalmıyor</strong>.</p>
+        </div>
+      </div>
+
+      <h3>Kart nasıl üretilir? (temel yaklaşım)</h3>
+      <p>Aslında istediğin gibi üretebilirsin. Bu konuda serbestsin. Benim deneyimlerimden yola çıkarak şöyle bir öneri verebilirim: en temelde karakterin <strong>önden, yandan ve arka görünüşü</strong> — bunları vermemiz gerekiyor.</p>
+      <p>Karakter referans kartlarını farklı kategoriler altında üretebilirsin ve projelerine uygun bir şekilde bunları ekleyebilirsin.</p>
+      <p>Örnek olarak, eğer bir <strong>animasyon, çizgi film tarzında</strong> videolar üreteceksen, karakterinin mimiklerinin canlı olması gerekir. Çünkü çizgi filmler, mimikler üzerine ve abartılı hareketler üzerine kurulu bir mantığa sahiptir.</p>
+      <p>Bu tarz bir şey yapacaksan, önerim, karakter referans kartına normal görünüşünün yanında, ayrı bir de <strong>duygusal ifadeleri ve yansıttığı hallerini</strong> eklemen: üzgünken, mutluyken, şok olmuşken; yani mimikleri…</p>
+      <p>Eğer karakterinin kişiliğinde, oluşturduğun <em>persona</em>'da belirgin değişiklikte özellikler varsa — örneğin bu karakter üzgünken farklı bir yürüme stiline veya postüre sahipse — <strong>tür içinde</strong> karakter referans kartı oluşturabilirsin.</p>
+
+      <p>Burada uzun uzun anlatmaya çalıştığım şeyin altında mantığında şu yatıyor:</p>
+
+      <blockquote class="callout">
+        Benim neye ihtiyacım var?<br>
+        Ben ne üreteceğim?<br>
+        Hangi tarzda bir şey üreteceğim?<br>
+        Ona uygun yapay zekayı nasıl besleyebilirim?
+      </blockquote>
+
+      <p>Bunları düşünmek gerekiyor.</p>
+
+      <div class="info warn">
+        <div class="info-icon">!</div>
+        <div class="info-body">
+          <div class="info-title">Doğru prompt diye bir şey yok</div>
+          <p>Her şeyi çözecek tek bir prompt yok. Önemli olan şey, ben istediğim şeyde neye ihtiyaç duyduğumdur. Buradaki mantığı bulmak, dinamiği görebilmek önemlidir.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 2 ============ -->
+    <section id="bolum-2">
+      <div class="section-head">
+        <div class="section-num">BÖLÜM 02</div>
+        <h2>Temel karakter referans kartı üretimi</h2>
+      </div>
+
+      <p>Doğrudan aşağıda verdiğim taslağı kullanabilirsin veya buna benzer bir şey üretmek istersen, altındaki promptu doğrudan herhangi bir görsel oluşturucuda kullanabilirsin — ya da ihtiyacına göre özelleştirerek.</p>
+
+      <h3>Temel boş taslak</h3>
+      <figure class="bordered">
+        <img src="./gorseller/01-bos-taslak-temel.png" alt="Temel boş referans kart taslağı: Main, Front, Profile, Pose 1, Pose 2, Detail">
+        <figcaption>Temel boş karakter referans kart taslağı — krem zemin, ince çerçeveler, etiketli boş kutular.</figcaption>
+      </figure>
+
+      <h4>Bu taslağı üretmek için kullanılan prompt</h4>
+      <div class="prompt">
+        <div class="prompt-head">
+          <div class="prompt-dots"><span></span><span></span><span></span></div>
+          <div class="prompt-label">Prompt · Boş referans kart taslağı (Temel)</div>
+        </div>
+        <div class="prompt-body">Create a clean, professional blank character reference board template.
+
+The template should be designed as a character sheet / character reference board, but it must NOT include any character, face, person, product, setting, or illustrated subject.
+
+LAYOUT REQUIREMENTS:
+
+Create multiple empty image placeholder boxes arranged in a clean editorial layout.
+
+Include:
+- one large main character image placeholder on the left
+- two smaller headshot placeholder boxes on the upper right
+- two or more rectangular pose variation placeholder boxes below
+- one optional detail placeholder box for outfit, hands, accessories, or expression details
+
+Each placeholder should be empty and clearly separated with thin clean borders.
+
+Add a short, readable label above each placeholder box.
+Use only short keyword labels, not long sentences.
+
+Suggested labels:
+- Main
+- Front
+- Profile
+- Pose 1
+- Pose 2
+- Detail
+
+The labels should be minimal, clean, and small.
+They should help identify what each box represents without visually distracting from the layout.
+
+STYLE REQUIREMENTS:
+
+Use a minimal, modern, clean visual style.
+Use soft neutral colors such as white, cream, light gray, warm gray, or beige.
+Use thin borders, subtle shadows, rounded corners, and balanced spacing.
+Keep the composition elegant, organized, and easy to reuse.
+
+Do not include people, faces, silhouettes, wireframes, icons, logos, watermarks, or random symbols.
+Do not fill the boxes with illustrations.
+All boxes must remain blank placeholders.
+
+Only include short labels above the boxes.
+Do not include long readable text, paragraphs, instructions, or decorative typography.
+
+The final result should look like a polished blank character reference board template ready to be reused.</div>
+      </div>
+
+      <h3>İçini doldurmak — üç yol</h3>
+      <p>Promptumuzu oluşturduk. Peki bundan sonra ne yapacağız? <strong>İçini doldurmak</strong> var. Bu noktada üç seçeneğin var:</p>
+      <ul class="bullets">
+        <li>Kendi fotoğraflarını doğrudan <strong>Canva</strong> üzerinde buna ekleyebilirsin.</li>
+        <li>Yapay zeka ile oluşturduğun bir karakterin, tutarlı bir şekilde farklı açılardan referans kartını oluşturmasını isteyebilirsin.</li>
+        <li>Doğrudan şablonu verip yanına çektiğin <strong>kendi selfie'ni</strong> ekleyip bir referans kartı oluşturmasını isteyebilirsin.</li>
+      </ul>
+      <p>Ben bu noktada <strong>üçüncü adımı</strong> seçiyorum ve hâlihazırda elimde olan bir görselimi kullanarak kendime referans kartı oluşturacağım.</p>
+
+      <h3>ChatGPT ile adım adım</h3>
+      <p>Herhangi bir görsel üretebileceğin araca gir. Ben örnek için <strong>ChatGPT</strong>'yi kullandım. Sen istersen <strong>Gemini</strong>, <strong>MidJourney</strong> veya farklı alternatifler kullanabilirsin.</p>
+
+      <figure class="bordered">
+        <img src="./gorseller/02-chatgpt-adim-adim.png" alt="ChatGPT'de karakter referans kartı doldurma — 4 adım">
+        <figcaption>Adım sırası önemli — promptumuz bu sıraya göre verildi.</figcaption>
+      </figure>
+
+      <ol class="steps">
+        <li>Görsel oluşturma seçeneğini seç.</li>
+        <li>Karakter referans kartı taslağımızı yükle.</li>
+        <li>Hangi karakteri oluşturacaksan, o karakterin fotoğrafını yükle. Kendi fotoğrafını veya hangi karakterin referansını oluşturmak istiyorsan, onu.</li>
+        <li>Verdiğim promptu gir ve kontrol ettikten sonra görsel oluştur.</li>
+      </ol>
+
+      <div class="info warn">
+        <div class="info-icon">!</div>
+        <div class="info-body">
+          <div class="info-title">Sıraya dikkat</div>
+          <p>Bu sıra önemli. Aksi halde yanlış sonuç alma ihtimalin yüksek.</p>
+        </div>
+      </div>
+
+      <h3>İlk sonuç</h3>
+      <figure class="bordered">
+        <img src="./gorseller/03-temel-kart-sonuc.png" alt="İlk karakter referans kartı sonucu">
+        <figcaption>Temel referans kart sonucu — kullanılabilir.</figcaption>
+      </figure>
+
+      <p>Aldığım sonuç bu şekilde oldu; hoşuma gitti. Kullanılabilir bir karakter referans kartı oldu. Yüz ifadesi, görünüş bakımından bana çok benziyor.</p>
+      <p>Fark ettiysen, saçlarımı burada kısa yapmış ve bence çok da güzel olmuş. Fakat benim saçlarım uzun. Peki niye böyle yaptı? Çünkü ona verdiğim veride <strong>saçlarım kısa görünüyordu</strong>. Yapay zekaya neyi verirsen, onu görür, onu anlar ve onu kabul edip ona göre üretimini yapar.</p>
+
+      <div class="info">
+        <div class="info-icon">i</div>
+        <div class="info-body">
+          <div class="info-title">Net olmak önemli</div>
+          <p>Ne görünmesini istiyorsan, bunu söylemen veya göstermen önemli. Promptumuzda yer vermemiz önemli.</p>
+        </div>
+      </div>
+
+      <h3>Stil seçimi: gerçekçi mi, animasyon mu?</h3>
+      <p>Bu noktada <strong>animasyon tarzına çevirmek</strong> isteyebilir, veya en başında her şeyi tek seferde verip halletmek isteyebilirsin. Bunu da yapabilirsin.</p>
+      <p>Yani: önce referans kartı taslağını yükleyip, ardından kendi fotoğrafını yükleyip, peşinden örnek olarak oluşturmasını isteyeceğin bir <strong>animasyon karakterini</strong> referans olarak verip bunu yapmasını da isteyebilirsin. Derste bunun örneğini yaptık.</p>
+      <p>Yapabiliyor — ama önerim: <strong>önce kendi fotoğrafını ve animasyon halini verip karakteri oluşturmak</strong>, ardından ikinci adımda referans kartını oluşturmak. Vaktin yoksa ilk seçeneği seç (hepsini bir arada üret); ama yaptığın şeye önem veriyorsan ve daha fazla uğraşmak istemiyorsan, ayrı ayrı adımlarla ilerle.</p>
+
+      <blockquote class="callout">
+        Çünkü ne kadar fazla şey yaptırmak istersen, yapay zekanın kafası da o kadar fazla karışacaktır.
+      </blockquote>
+
+      <h3>Pixar dönüşümü örneği</h3>
+      <figure class="bordered">
+        <img src="./gorseller/04-pixar-donusum.png" alt="Pixar dönüşümü: Referans görsel + Prompt + Sonuç">
+        <figcaption>Referans görsel → Prompt → Pixar tarzı sonuç.</figcaption>
+      </figure>
+
+      <h4>Pixar tarzı 3D portre promptu</h4>
+      <div class="prompt">
+        <div class="prompt-head">
+          <div class="prompt-dots"><span></span><span></span><span></span></div>
+          <div class="prompt-label">Prompt · Pixar 3D portre</div>
+        </div>
+        <div class="prompt-body">A stylized Pixar-style 3D portrait of a person with smooth skin, large expressive eyes, casual outfit, slight head tilt and warm smile, friendly and approachable expression, ultra-clean character design, vibrant orange-to-pink gradient background, soft studio lighting with subtle rim light, cinematic depth of field, ultra-detailed, 8K render, octane render style.</div>
+      </div>
+
+      <figure class="bordered">
+        <img src="./gorseller/05-temel-kart-pixar.png" alt="Pixar tarzı doldurulmuş temel karakter referans kartı">
+        <figcaption>Pixar tarzı doldurulmuş temel referans kart.</figcaption>
+      </figure>
+
+      <p>Evet, bu haliyle gayet güzel, kullanılabilir bir karakter referans kartı oluşturduk. Ama yeterli mi?</p>
+      <p>Belki temel şeyler için yeterli. Ama eğer bir çizgi film üretmek istiyorsan veya daha gerçekçi, daha hoş sonuçlar elde etmek istiyorsan, belli başlı şeyleri daha ekleyebilirsin.</p>
+    </section>
+
+    <!-- ============ SECTION 3 ============ -->
+    <section id="bolum-3">
+      <div class="section-head">
+        <div class="section-num">BÖLÜM 03</div>
+        <h2>Geliştirilmiş referans kartı (mimikler dahil)</h2>
+      </div>
+
+      <p>Şimdi karakter referans kartımızı biraz daha geliştirelim. Ne ekleyebiliriz? Nelere ihtiyacımız var diye düşünelim.</p>
+
+      <div class="info">
+        <div class="info-icon">i</div>
+        <div class="info-body">
+          <div class="info-title">Kim için bu bölüm?</div>
+          <p>Bu bölüm, daha detaylı bir karakter referans kartı oluşturmak isteyenleri ilgilendiriyor. Bu kadar detaylı yapmak zorunda değilsin; ama verdiğin detaylar ne kadar çok olursa, o kadar başarılı sonuçlar elde edersin.</p>
+        </div>
+      </div>
+
+      <h3>Neden detay eklemeli?</h3>
+      <p>Mantıken düşündüğümde, eğer ben video üreteceksem, sadece karakterin dışarıdan görünüşü, yüzü ve yüz hatları önemli değil. Bunun yanında karakterin <strong>vücudu, önden ve arkadan görünüşü</strong> de önemli. Ek olarak, çizgi film ürettiğim için <strong>mimikler</strong> de çok önemli. Duyguyu verebilmesi çok önemli.</p>
+      <p>O yüzden referans kartıma bu detayları da eklemek istiyorum ki, her seferinde nasıl bir gülüşe sahip olduğunu veya nasıl bir vücut hatlarına sahip olduğunu teker teker tanımlamak zorunda kalmayayım.</p>
+
+      <h3>Geliştirilmiş boş taslak</h3>
+      <figure class="bordered">
+        <img src="./gorseller/06-bos-taslak-gelismis.png" alt="Geliştirilmiş boş karakter referans kart taslağı — 3x2 main + 2x5 facial expressions">
+        <figcaption>Geliştirilmiş boş taslak — üstte 6 panel ana referans, altta 10 mimik kutucuğu.</figcaption>
+      </figure>
+
+      <h4>Geliştirilmiş taslak için prompt</h4>
+      <div class="prompt">
+        <div class="prompt-head">
+          <div class="prompt-dots"><span></span><span></span><span></span></div>
+          <div class="prompt-label">Prompt · Geliştirilmiş boş referans kart (9:16)</div>
+        </div>
+        <div class="prompt-body">Create a clean, professional blank character reference board template.
+
+The final image must be in a portrait 9:16 aspect ratio.
+
+IMPORTANT:
+This is a blank template.
+Do NOT include any character, face, person, silhouette, object, product, setting, or illustration.
+
+LAYOUT STRUCTURE:
+
+Create two separate sections:
+
+1. MAIN CHARACTER REFERENCE SECTION
+2. FACIAL EXPRESSIONS SECTION
+
+---
+
+MAIN CHARACTER REFERENCE SECTION:
+
+Place this section at the top.
+It should take up around 65–70% of the full canvas height.
+
+Create one large rounded rectangular container.
+Inside this container, create exactly 6 large placeholder boxes arranged in a 3x2 grid.
+
+Top row labels:
+- MAIN
+- FRONT
+- PROFILE
+
+Bottom row labels:
+- FULL BODY FRONT
+- FULL BODY BACK
+- DETAIL
+
+Each placeholder box must be equal in width and height.
+All boxes must be evenly spaced.
+Use clean rounded corners and thin elegant borders.
+
+Place each label in a small rounded label tab slightly overlapping the top edge of its box.
+
+---
+
+FACIAL EXPRESSIONS SECTION:
+
+Place this section below the main section.
+It should take up around 25–30% of the full canvas height.
+
+Create one wide rounded rectangular container.
+
+At the top center of this container, add the title:
+- FACIAL EXPRESSIONS
+
+Add a thin decorative horizontal line on both sides of the title.
+
+Inside this section, create exactly 10 smaller rounded square placeholder boxes.
+Arrange them in 2 rows and 5 columns.
+
+Top row labels:
+- NEUTRAL
+- SMILE
+- LAUGH
+- SAD
+- CRY
+
+Bottom row labels:
+- ANGRY
+- SURPRISED
+- CURIOUS
+- THINKING
+- CONFUSED
+
+Each expression box must be small, equal-sized, evenly spaced, and aligned.
+
+Place each label in a small rounded label tab slightly overlapping the top edge of its box.
+
+---
+
+STYLE REQUIREMENTS:
+
+Use a minimal, elegant, soft editorial design.
+
+Color palette:
+- off-white background
+- cream label tabs
+- warm beige borders
+- subtle warm gray shadows
+
+Use:
+- thin borders
+- rounded corners
+- soft spacing
+- balanced margins
+- clean alignment
+
+The overall design should feel polished, reusable, and professional.
+
+---
+
+RESTRICTIONS:
+
+Do NOT include:
+- characters
+- faces
+- silhouettes
+- icons
+- logos
+- watermarks
+- illustrations
+- decorative drawings
+
+All boxes must remain empty placeholders.
+
+Only include the specified short labels and the title "FACIAL EXPRESSIONS".
+Do not add long text, paragraphs, instructions, or extra typography.
+
+---
+
+OUTPUT:
+
+The final result should look like a high-quality reusable character reference sheet template with:
+- a large 3x2 main character reference section at the top
+- a compact 2x5 facial expression reference section at the bottom</div>
+      </div>
+
+      <p>Doğrudan verdiğim görseli kaydedip onu kullanabilirsin veya verdiğim promptu kullanarak sıfırdan kendine bir taslak üretebilirsin. Promptu incele; değiştirmek istediğin veya eklemek istediğin farklı detaylar olursa, ilgili yerlere yazarak bu prompta ekleyip yeni bir taslak oluşturabilirsin.</p>
+
+      <blockquote class="callout">
+        Tamamıyla iteratif yapma yöntemi — yani promptu geliştirme yöntemini burada kullanabilirsin. Benim de yaptığım şey buydu.
+      </blockquote>
+
+      <h3>Geliştirilmiş kartın doldurulmuş hali</h3>
+      <p>Yapacağım şey yine aynı:</p>
+      <ol class="steps">
+        <li>Görsel üretim aracına gitmek. Görsel üretme seçeneğini seçiyorum.</li>
+        <li>Referans kartı taslağımı eklemek. Ardından, karakterimin görselini ekliyorum.</li>
+        <li>Promptumu giriyorum ve referans kartını oluşturuyorum.</li>
+      </ol>
+
+      <figure class="bordered">
+        <img src="./gorseller/07-gelismis-kart-sonuc.png" alt="Geliştirilmiş karakter referans kartının doldurulmuş hali">
+        <figcaption>Geliştirilmiş kartın tamamen doldurulmuş hali — ana referans + 10 mimik.</figcaption>
+      </figure>
+
+      <p>Tebrik ederim. Şu an elinde birçok videoyu başarılı ve tutarlı bir şekilde üretebilecek <strong>karakter referans kartın</strong> var. Buradan sonra istediğin kadar bu kartı geliştirebilirsin; ama yine de çok fazla bilgi kirliliği yapmamak adına, çok da show yapmayalım. Bu yeterli olacaktır. :)</p>
+    </section>
+
+    <hr class="deco">
+
+    <!-- ============ SECTION 4 ============ -->
+    <section id="bolum-4">
+      <div class="section-head">
+        <div class="section-num">BÖLÜM 04</div>
+        <h2>Starting & Ending Frame mantığı</h2>
+      </div>
+
+      <p>Şimdi gelelim, video oluşturmadan önce atacağımız gerçekten ilk somut düşünce adımına.</p>
+      <p>Doğrudan karakter referans kartını vererek ve aklındaki videoyu tamamıyla aktararak baştan sona bir video üretebilirsin. Bunda hiçbir sakınca yok. Hızlı bir şekilde aksiyon almak için bu yöntemi kullanabilirsin.</p>
+      <p>Fakat bu yazının başında da söylediğim gibi, video üretirken en sık karşılaşacağımız problem <strong>tutarlılıktır</strong>. Neyin tutarlılığının olduğunun bir önemi yok.</p>
+
+      <h3>Yapay zeka boşlukları kendisi doldurur</h3>
+      <p>Tamam, referans kartımız ile karakterin tutarlılığını sağlayabiliyoruz. Peki, videonun içindeki olası mekan tutarsızlıkları veya aklındakinin tam olarak gerçekleşmeme kısmı, yani <strong>videonun kontrolü ne kadar bizim elimizde olacak?</strong></p>
+
+      <div class="big-quote">
+        <p>Yapay zekaya aklındaki bağlamı vermezsen, boşlukları kendisi doldurur.</p>
+      </div>
+
+      <p>Videonun tutarlı olmasını istiyorsan, hangi alanda olduğunun bir önemi yoktur. Yapay zekaya, fikir yürütebileceği ve boşlukları doldurabileceği alan bırakmamak gerekir.</p>
+      <p>Bunu yapmanın diğer yöntemlerinden biri, <strong>sahnenin nasıl başladığını ve nasıl bittiğini</strong> ona açık ve net bir şekilde söylemek veya göstermektir. Sadece söylemeyi veya sadece göstermeyi tercih edebilirsin; ancak en güzel versiyonu, bunu <em>gösterirken söylemekten</em> geçiyor.</p>
+
+      <blockquote class="callout">
+        Yani, prompt ile videoda ne olacağını anlatmadan önce, görselle göstermemiz lazım. Unutma — amacımız yapay zekanın "boşlukları" doldurmasına izin vermemek.
+      </blockquote>
+
+      <h3>Sahne, Shot, Frame — kavramlar</h3>
+      <p>Bu düşünceden bir sıyrılıyoruz şu anda. Bizim sahne dediğimiz şey, tüm video olmayacak. Yani, "10 saniye = bir sahne" gibi bir mantığımız bu noktada devre dışı.</p>
+      <p>Ama eğer üreteceğin 10 saniyelik videonun içinde çok büyük atlamalar, çok büyük olaylar olmuyorsa, başını ve sonunu vermek yeterli olacaktır. Aradaki kısmı zaten promptlarla yapay zekaya yaptırtabiliyoruz.</p>
+
+      <p>Öncelikli olarak bilmemiz gereken şey, video üretirken bir adet <strong>senaryoya</strong> ihtiyacımız var. Senaryo, video üretirken bizim en büyük şeyimiz. Yani: videonun tamamında ne oluyor — bu bizim ana hikayemiz.</p>
+
+      <blockquote>Örneğin, bir kadın gece boyunca yapay zeka ile çalışıp kendi işini kuruyor. Bu senaryomuz.</blockquote>
+
+      <p><strong>Sahne</strong> dediğimiz şey ise bu senaryoyu oluşturan parçalarımız.</p>
+
+      <blockquote>Kadın masada çalışıyor, kahve yapıyor, sunum hazırlıyor; sabah oluyor.</blockquote>
+
+      <p>Bunların her biri bir sahne.</p>
+
+      <p><strong>Shot</strong> dediğimiz kısım, sahnenin kamera açısından çekilmiş halidir. Örneğin, "kadın çalışıyor" sahnesinde:</p>
+
+      <blockquote>Yakın plan, klavyeye yazan eller ve yandan kamera açısı.</blockquote>
+
+      <p>Bunların her biri bir shot, yani çekim demektir.</p>
+
+      <p><strong>Frame</strong> dediğimiz şey ise tek bir fotoğraftır. Video, aslında hızlı geçen fotoğraflardır. Bir frame örneği vereceksek: kadının o anki donmuş görüntüsü.</p>
+
+      <div class="concept-grid">
+        <div class="concept">
+          <div class="concept-name">Senaryo</div>
+          <div class="concept-desc">Videonun tamamı. Ana hikaye.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Sahne</div>
+          <div class="concept-desc">Senaryoyu oluşturan parçalar — eylemin yer aldığı bölümler.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Shot (Çekim)</div>
+          <div class="concept-desc">Sahnenin belirli bir kamera açısından çekilmiş hali.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Frame (Kare)</div>
+          <div class="concept-desc">Tek bir fotoğraf. Videonun en küçük yapı taşı.</div>
+        </div>
+      </div>
+
+      <h3>Yapay zekanın sınırları</h3>
+      <p>Bu kadar uzun uzun anlattım. Niye anlattım? Çünkü <strong>yapay zekanın sınırlarını</strong> bir kez daha görmeni istedim.</p>
+      <p>Genelde şu hatayı yapıyoruz: yapay zekayı Pixar gibi veya herhangi bir büyük stüdyo gibi düşünüyoruz, ama değil. Stüdyolar, 3 boyutlu sahnelerle, animasyonlarla, fizik kurallarıyla, timeline ile keyframe'lerle çalışıyor; ancak yapay zeka ile video üretme modelleri bunlarla çalışmıyor.</p>
+      <p>Yapay zeka video modelleri, frame'ler arasında <strong>mantıklı görünen görüntüler üretmeye</strong> çalışıyor. Tam bir fiziksel mantığı yok; daha çok rüya görürmüş gibi çalışıyor da diyebilirim bu noktada.</p>
+
+      <h3>Yönetmen sensin</h3>
+      <p>Şimdi düşünce tarzımızı biraz daha değiştirelim ve en doğruya yakın düşünme tarzını şu şekilde tabir edebiliriz:</p>
+
+      <div class="big-quote">
+        <p>Yönetmen sensin. Yapay zeka da görüntü operatörü gibi çalışıyor. Sen sahneyi tanımlarsın, framingi verirsin, hareket sınırını koyarsın, karakteri kilitlersin. Yapay zeka da arada kalan kısmı akıtır, tamamlar.</p>
+      </div>
+
+      <p>Evet, birçoğumuzun hayalinde "tek bir prompt yazayım ve ortaya mükemmel sonuç çıksın" gibi bir düşünce var; ama profesyoneller bu işi böyle yapmıyor. Yani, uzun tek bir video üretmiyorlar. Bunun yerine, <strong>kısa çekimler ile kontrollü geçişlerle sahne bazlı üretimler</strong> yapıyorlar.</p>
+
+      <h4>Mantık şu şekilde çalışıyor</h4>
+      <ol class="steps">
+        <li><strong>Çekim 1:</strong> Kadın laptop ile çalışıyor.</li>
+        <li><strong>Çekim 2:</strong> Yakın plan göz.</li>
+        <li><strong>Çekim 3:</strong> Kahve alıyor.</li>
+        <li><strong>Çekim 4:</strong> Pencereye bakıyor.</li>
+      </ol>
+      <p>Bunların hepsini ayrı ayrı ürettiriyor. Ardından edit yaparak birleştiriyor.</p>
+
+      <h4>Neden böyle yapıyor?</h4>
+      <ul class="bullets">
+        <li>Çünkü yapay zeka, 10 saniyelik kompleks bir üretim yerine 3 saniyelik kontrollü sahnelerde çok daha iyi sonuçlar veriyor.</li>
+        <li>Çünkü hareket alanı sınırlı.</li>
+        <li>Çünkü doldurması gereken alan daha az.</li>
+      </ul>
+
+      <div class="info warn">
+        <div class="info-icon">!</div>
+        <div class="info-body">
+          <div class="info-title">Bunu büyük harflerle tekrar söylüyorum</div>
+          <p><strong>"Starting frame" ve "ending frame" yapay zekaya hikaye yazdırmaz.</strong> Yapay zekaya <em>hareket sınırı</em> verir. Ve ne kadar sınır verirsek, o kadar kaliteli, o kadar tutarlı, o kadar sinematik çıktı alırız.</p>
+        </div>
+      </div>
+
+      <p>Kısacası, video üretme işi <strong>bütünü tek seferde alma</strong> değil; <strong>bütünü görüp parçalara ayırıp teker teker çıktı alma</strong> işidir.</p>
+
+      <hr class="deco">
+
+      <div class="big-quote">
+        <p>Video fikri büyük olabilir. Ama yapay zekâya vereceğimiz sahne küçük olmalı. Büyük fikri önce sahneye, sonra shot'a, sonra starting ve ending frame'e indiriyoruz.</p>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 5 ============ -->
+    <section id="bolum-5">
+      <div class="section-head">
+        <div class="section-num">BÖLÜM 05</div>
+        <h2>Demo: Nef'in hikayesi (uçtan uca)</h2>
+      </div>
+
+      <p>Hadi şimdi demomuzu yapalım.</p>
+
+      <h3>Senaryo</h3>
+      <p>Ürettiğim karaktere <strong>Nef</strong> adını verdim. Hayalimdeki sahnede Nef adlı arkadaşımız bir kafede oturuyor ve çalışıyor. Ama o kadar çok çalışmış ki, her yere tutulmuş ve bundan yakınıyor.</p>
+      <p>Evet, aklımdaki sahne bu ve bunun için de bir <strong>başlangıç sahnesi</strong> ile <strong>bitiş sahnesine</strong> ihtiyacım var.</p>
+
+      <figure class="bordered">
+        <img src="./gorseller/08-triptych-kart-starting-ending.png" alt="Karakter referans kartı + Starting Frame + Ending Frame">
+        <figcaption>Solda karakter referans kartımız, ortada Starting Frame, sağda Ending Frame.</figcaption>
+      </figure>
+
+      <h3>Hangi araçta üretelim?</h3>
+      <p>Bu adımda ChatGPT'den veya Gemini'in içinden doğrudan <strong>Flow</strong>'a gittim. Bunu yapmamın en büyük sebebi, <strong>aynı yerin içinde videoyu da üretebiliyor olmamdan</strong> dolayı.</p>
+      <p>O yüzden eğer Google AI aboneliğin varsa, sen de doğrudan Flow'un içine gir ve tüm üretimlerini orada yap. Emin ol, daha kolay olacak.</p>
+      <p>Bu şekilde yapmak zorunda değilsin. Görselleri ayrı ayrı da üretebilirsin. Adımlar aynı: <strong>referans görseli ekle, prompt gir ve oluştur</strong>.</p>
+
+      <h3>Ending Frame için "İsteme ekle" ipucu</h3>
+      <p>Starting frame görselin oluştuktan sonra, mouse'unu oluşan görselin üstüne doğru getir. Sağ üst köşede kalp, ok ve üç noktanın olduğunu göreceksin. Üç nokta kısmına tıkla ve <strong>"İsteme ekle"</strong> seçeneğine tıkla.</p>
+
+      <figure class="bordered">
+        <img src="./gorseller/09-isteme-ekle.png" alt="Starting frame üzerinde üç nokta menüsünden İsteme ekle">
+        <figcaption>Üç noktaya tıkla → İsteme ekle.</figcaption>
+      </figure>
+
+      <p>Bunu yaptığında şunu demiş oluyorsun: <em>"Bir sonraki vereceğim promptta bu görseli kullan."</em> Yani aslında, <strong>Ending Frame</strong> için karakteri ve mekanı tutarlı yapması, devamlılığın korunması için bu görseli promptumuzun içine eklemiş oluyoruz.</p>
+
+      <figure class="bordered">
+        <img src="./gorseller/10-prompt-referans-ekleme.png" alt="Promptun içine starting frame referansı eklenmiş hali">
+        <figcaption>Starting frame artık ending frame promptunun referans görseli.</figcaption>
+      </figure>
+
+      <p>Ending Frame'i de ekledikten sonra, "görseli oluştur" diyoruz ve karşımıza Ending Frame'imiz çıkıyor.</p>
+
+      <figure class="bordered">
+        <img src="./gorseller/11-ending-frame-sonuc.png" alt="Ending frame oluştu">
+        <figcaption>Ending Frame hazır — karakter ve mekan tutarlılığı korundu.</figcaption>
+      </figure>
+
+      <h3>Video üretimine geçiş (Flow)</h3>
+      <p>Bu noktadan sonra artık videoyu oluşturmaya geçebiliriz. İlk ve en önemli adımımız: <strong>aynı sayfada kalıyoruz ama üretim türümüzü değiştiriyoruz</strong>. Bunun için sayfanın altındaki gösterdiğim yere gel.</p>
+
+      <figure class="bordered">
+        <img src="./gorseller/12-flow-video-secim.png" alt="Flow'da Görüntü/Video seçimi ve Veo 3.1 modeli">
+        <figcaption>Üretim türünü Görüntü → Video olarak değiştir.</figcaption>
+      </figure>
+
+      <p>Gerekli ayarlamalarını yaptıktan sonra, sana gösterdiğim gibi bir arayüz göreceksin. Burada <strong>"başlat"</strong> olan yere tıkladığında, görsel seçmeni isteyecek. En son oluşturduğun görsellerden <strong>"starting frame"</strong> için oluşturduğun görseli "başlat" kısmı için seç. <strong>"Bitiş"</strong> bölümünde ise <strong>"ending frame"</strong> olarak ürettiğin görseli seç. Ardından prompt yazma yerine gel.</p>
+
+      <figure class="bordered">
+        <img src="./gorseller/13-baslat-bitis-frame.png" alt="Flow'da Başlat ve Bitiş frame seçimi arayüzü">
+        <figcaption>"Başlat" → starting frame, "Bitiş" → ending frame, sonra video promptu.</figcaption>
+      </figure>
+
+      <h3>Frame'ler ve sonuç</h3>
+      <div class="image-pair">
+        <figure class="bordered">
+          <img src="./gorseller/14-starting-frame.jpeg" alt="Starting frame: Nef kafede yorgun çalışıyor">
+          <figcaption>Starting frame</figcaption>
+        </figure>
+        <figure class="bordered">
+          <img src="./gorseller/15-ending-frame.jpeg" alt="Ending frame: Nef ayağa kalkmış, gülümsüyor">
+          <figcaption>Ending frame</figcaption>
+        </figure>
+      </div>
+
+      <p>Birincisi starting frame'im; ikincisi ise ending frame'im.</p>
+
+      <a href="https://drive.google.com/file/d/1UW-k2yfclPnQzJwq6QoFbUmPis7nCLrP/view?usp=drive_link" class="link-card">
+        <div class="link-card-icon">▶</div>
+        <div class="link-card-body">
+          <div class="link-card-title">Sonuç videosunu izle</div>
+          <div class="link-card-url">drive.google.com/file/d/1UW-k2yfclPnQzJwq6QoFbUmPis7nCLrP</div>
+        </div>
+      </a>
+    </section>
+
+    <hr class="deco">
+
+    <!-- ============ SECTION 6 ============ -->
+    <section id="bolum-6">
+      <div class="section-head">
+        <div class="section-num">BÖLÜM 06</div>
+        <h2>Daha kolay yol — Custom GPT</h2>
+      </div>
+
+      <p>Karakter referans kartını oluşturdun. Aklında bir karakter var. Oluşturduğun karakterin personası belli; nasıl maceralar yaşayacağı belli. Ama bunları nasıl <em>promptlaştıracağını</em>, nasıl ending frame, starting frame ve video promptunu oluşturacağını bilmiyorsan — senin için bir <strong>custom GPT</strong> oluşturdum.</p>
+
+      <p>İlk derslerde de prompt düzenleyici oluşturmuştum, hatırlarsan, onun bir benzeri. Şimdi, aklındakileri nasıl promptlaştıracağın konusunda emin değilsen, aşağıda verdiğim linke tıklayıp ChatGPT'ne oluşturduğum bu GPT'yi ekliyorsun. Oradan aklındaki sahneyi yazıyorsun. Zaten custom GPT seni yönlendiriyor olacak.</p>
+
+      <a href="https://chatgpt.com/g/g-69fa85d0d990819196a24c9c713dfb41-ai-video-sahne-asistani" class="link-card">
+        <div class="link-card-icon">✦</div>
+        <div class="link-card-body">
+          <div class="link-card-title">AI Video Sahne Asistanı (Custom GPT)</div>
+          <div class="link-card-url">chatgpt.com/g/g-69fa85d0d990819196a24c9c713dfb41</div>
+        </div>
+      </a>
+
+      <p style="margin-top: 32px; font-family: 'Fraunces', serif; font-style: italic; font-size: 18px; color: var(--ink-soft);">Sevgiler, umarım yararlı bir rehber olmuştur. ✦</p>
+    </section>
+
+    <footer class="end">
+      Karakter Referans Kartından Video Üretimine · Ders Notu v1<br>
+      Tüm promptlar ve örnek görseller eğitim amacıyla derste paylaşılmıştır.
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>
